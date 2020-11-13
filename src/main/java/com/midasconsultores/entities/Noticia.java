@@ -5,7 +5,10 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -17,10 +20,7 @@ public class Noticia implements Serializable {
 
 	@Id
 	@Column( length = 30 )
-	private String id;
-	
-	@Column( length = 40 )
-	private String fuente;
+	private String id;	
 	
 	@Column( length = 40 )	
 	@NotEmpty
@@ -35,6 +35,10 @@ public class Noticia implements Serializable {
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date fechaPublicacion;
+	
+	@OneToOne( fetch = FetchType.EAGER)
+	@JoinColumn(name = "fuente_id", nullable = false)
+	Fuente fuente; 
 
 	public Noticia() {
 		this.id="";
@@ -48,14 +52,7 @@ public class Noticia implements Serializable {
 		this.id = id;
 	}
 
-	public String getFuente() {
-		return fuente;
-	}
-
-	public void setFuente(String fuente) {
-		this.fuente = fuente;
-	}
-
+	
 	public String getCategoria() {
 		return categoria;
 	}
@@ -89,11 +86,19 @@ public class Noticia implements Serializable {
 	}
 	
 	
+	public Fuente getFuente() {
+		return fuente;
+	}
 
+	public void setFuente(Fuente fuente) {
+		this.fuente = fuente;
+	}
+
+    
 	@Override
 	public String toString() {
-		return "Noticia [id=" + id + ", fuente=" + fuente + ", categoria=" + categoria + ", titulo=" + titulo
-				+ ", urlNoticia=" + urlNoticia + ", fechaPublicacion=" + fechaPublicacion + "]";
+		return "Noticia [id=" + id + ", categoria=" + categoria + ", titulo=" + titulo + ", urlNoticia=" + urlNoticia
+				+ ", fechaPublicacion=" + fechaPublicacion + ", fuente=" + fuente + "]";
 	}
 
 

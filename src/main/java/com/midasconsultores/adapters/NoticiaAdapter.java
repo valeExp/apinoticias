@@ -1,4 +1,4 @@
-package com.midasconsultores.mapper;
+package com.midasconsultores.adapters;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -12,15 +12,15 @@ import com.midasconsultores.cliente.WraperArticle;
 import com.midasconsultores.dto.Paginacion;
 import com.midasconsultores.entities.Noticia;
 
-public class NoticiaMapper {
+public class NoticiaAdapter {
 	
-	public static Noticia toEntity( Article article ){
+	public static Noticia articleToNoticia( Article article ){
 		 
 		 Noticia noticia = new Noticia();
 		 
 		 noticia.setId(  article.get_id() );
 		 noticia.setCategoria( article.getCategory()  );
-		 noticia.setFuente( article.getProvider().getName() );
+		 //noticia.setFuente( article.getProvider().getName() );
 		 noticia.setTitulo(  article.getTitle() );
 		 noticia.setUrlNoticia( article.getSourceUrl() );
 		 
@@ -40,10 +40,10 @@ public class NoticiaMapper {
 	 }
 	
 	
-	public static Paginacion<Noticia> toEntity( WraperArticle wraper ) {
+	public static Paginacion<Noticia> wraperArticleTOPaginacion( WraperArticle wraper ) {
 		
 		List<Noticia> noticias =  wraper.getArticles().stream()
-				  .map(NoticiaMapper::toEntity)
+				  .map(NoticiaAdapter::articleToNoticia)
 				  .collect( Collectors.toList() );
 		
 		Paginacion<Noticia> paginacion = new Paginacion<Noticia>( wraper.getPage(),wraper.getPages(), noticias, 50  );		

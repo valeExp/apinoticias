@@ -3,6 +3,7 @@ package com.midasconsultores.services.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.midasconsultores.adapters.NoticiaAdapter;
 import com.midasconsultores.cliente.Article;
 import com.midasconsultores.cliente.IClienteApi;
 import com.midasconsultores.cliente.WraperArticle;
@@ -25,8 +27,7 @@ import com.midasconsultores.dto.Paginacion;
 import com.midasconsultores.entities.Noticia;
 import com.midasconsultores.handler.RestTemplateResponseErrorHandler;
 import com.midasconsultores.services.INoticiaService;
-import com.midasconsultores.mapper.NoticiaMapper;
-import com.midasconsultores.repositories.NoticiaDinamicaRepository;
+import com.midasconsultores.repositories.NoticiaRepositoryImpl;
 import com.midasconsultores.repositories.NoticiaRepository;
 
 
@@ -35,7 +36,7 @@ import com.midasconsultores.repositories.NoticiaRepository;
 public class NoticiaServiceImpl implements INoticiaService {
 	
 	@Autowired 
-	NoticiaDinamicaRepository noticiaDinamicaRepository;
+	NoticiaRepositoryImpl noticiaDinamicaRepository;
 	
 	@Autowired 
 	NoticiaRepository noticiaRepository; 
@@ -49,12 +50,6 @@ public class NoticiaServiceImpl implements INoticiaService {
 	public void save( List<Noticia> noticias ) {		
 		noticias.forEach( noti -> noticiaRepository.save(noti) );
 	}	
-
-
-	@Override
-	public Paginacion<Noticia> findWithFilter(Date fecha, String fuente, String titulo, int pagina, boolean ordenFuenteAsc ) {
-		return noticiaDinamicaRepository.noticiasConFiltro(fuente, fecha, titulo, pagina, ordenFuenteAsc);
-	}
 
 
 	@Override
@@ -76,7 +71,7 @@ public class NoticiaServiceImpl implements INoticiaService {
 
     private List<Noticia> articlesToNoticias( List<Article> articles ){    	
     	 return  articles .stream()
-    			 .map(NoticiaMapper::toEntity)
+    			 .map(NoticiaAdapter::articleToNoticia)
     			 .collect( Collectors.toList() );
     }
 
@@ -85,6 +80,12 @@ public class NoticiaServiceImpl implements INoticiaService {
 	public boolean existeCopiaLocal(Date fecha) {
 		Long cantidadRegistro = noticiaRepository.countByFecha(fecha);
 		return cantidadRegistro != null && cantidadRegistro > 0;
+	}
+
+
+	@Override
+	public Paginacion<Noticia> getNoticiasConFiltro(Map<String, Object> condiciones, boolean ordenFuenteAsc) {
+		return noticiaDinamicaRepository.getNoticiasConFiltro( condiciones,  ordenFuenteAsc);	
 	}
 	
 }

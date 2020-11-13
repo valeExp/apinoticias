@@ -1,7 +1,9 @@
 package com.midasconsultores.controllers;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.midasconsultores.dto.Paginacion;
 import com.midasconsultores.dto.Respuesta;
 import com.midasconsultores.entities.Noticia;
+import com.midasconsultores.entities.ParamsBusquedaNoticia;
 import com.midasconsultores.services.INoticiaService;
 import com.midasconsultores.utilities.Utilities;
 
@@ -62,23 +65,6 @@ public class NoticiaController {
 	}
 	
 	
-	/*@GetMapping("/noticias")
-	public ResponseEntity<?> getNoticiasConFiltro( 
-			@ApiParam( name = "fecha", type = "String", value = "formato YYYY-MM-DD",  example="" , required = false) 
-			@RequestParam(required = false )  @DateTimeFormat(pattern = "yyyy-MM-dd") Date  fecha, 
-			@ApiParam( name = "titulo", type = "String", value = "Titulo de la noticia", example="",   required = false)
-			@RequestParam(required = false ) String titulo,
-			@ApiParam( name = "fuente", type = "String", value = "Fuente de la noticia", example="",  required = false)
-			@RequestParam(required = false ) String fuente, Pageable pageable ) {
-		
-			System.out.println( "fecha:" + fecha + " titulo:" + titulo + " fuente:" + fuente );
-		
-			Page<Noticia> pageableNotis = noticiaService.findByTituloContaining(titulo, pageable);
-		
-		   return new ResponseEntity<Page<Noticia>>( pageableNotis, HttpStatus.OK);
-		
-	}*/
-	
 	
 	@GetMapping("/noticias")
 	public ResponseEntity<?> getNoticiasConFiltro( 
@@ -88,19 +74,35 @@ public class NoticiaController {
 			@RequestParam(required = false ) String titulo,
 			@ApiParam( name = "fuente", type = "String", value = "Fuente de la noticia", example="",  required = false)
 			@RequestParam(required = false ) String fuente,
-			@ApiParam( name = "pagina", type = "String", value = "pagina", example="",  required = false)
-			@RequestParam(required = false ) Integer pagina,
+			@ApiParam( name = "pagina", type = "int", value = "pagina", example="",  required = false)
+			@RequestParam(required = false, defaultValue = "1" ) Integer pagina,
 			@ApiParam( name = "ordenFuenteAsc", type = "boolean", value = "ordenFuenteAsc", example="",  required = false)
-			@RequestParam(required = false ) Boolean ordenFuenteAsc) {
+			@RequestParam(required = false, defaultValue = "true" ) Boolean ordenFuenteAsc) {
+			
+			System.out.println("pagina: " + pagina + " ordenFuenteAsc: " + ordenFuenteAsc);
 			
 			
-			Paginacion<Noticia> noticias = noticiaService.findWithFilter( fecha, 
-																		  fuente,
-																		  titulo, 
-																		  pagina!=null?pagina:1,
-																		  ordenFuenteAsc!=null?ordenFuenteAsc:true );
+
+			Map<String, Object> condiciones = new HashMap<>();
+			
+			if( titulo != null ) {
+				condiciones.put( ParamsBusquedaNoticia.titulo.name() , titulo );
+			}
+			
+			if( fuente != null ) {
+				condiciones.put( ParamsBusquedaNoticia.fuente.name(), fuente );
+			}
+			
+			if( fecha != null ) {
+				condiciones.put( ParamsBusquedaNoticia.fecha.name(),fecha );
+			}
+			
+			condiciones.put( ParamsBusquedaNoticia.pagina.name() , pagina );
+			
 		
-		   return new ResponseEntity<Paginacion<Noticia>>( noticias, HttpStatus.OK);
+			Paginacion<Noticia> noticias = noticiaService.getNoticiasConFiltro( condiciones,  ordenFuenteAsc );
+		
+		    return new ResponseEntity<Paginacion<Noticia>>( noticias, HttpStatus.OK);
 		
 	}
 	

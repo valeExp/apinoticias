@@ -1,16 +1,21 @@
 package com.midasconsultores.entities;
 
+import java.io.Serializable;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
 @Table(name="fuentes")
-public class Fuente {
-
+public class Fuente implements Serializable{
+	
 	@Id
 	String id;
+	@Column(length = 30 )
 	String nombre;
+	@Column(length = 30 )
 	String alcance;
 		
 	public Fuente() {
@@ -34,7 +39,13 @@ public class Fuente {
 	public void setAlcance(String alcance) {
 		this.alcance = alcance;
 	}	
-	
-	
+		
+	@Override
+	public String toString() {
+		return "Fuente [id=" + id + ", nombre=" + nombre + ", alcance=" + alcance + "]";
+	}
+
+
+	private static final long serialVersionUID = 1L;
 	
 }

@@ -15,10 +15,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.midasconsultores.adapters.NoticiaAdapter;
 import com.midasconsultores.dto.Paginacion;
 import com.midasconsultores.entities.Noticia;
 import com.midasconsultores.handler.RestTemplateResponseErrorHandler;
-import com.midasconsultores.mapper.NoticiaMapper;
 import com.midasconsultores.utilities.Utilities;
 
 @Component("clienteRest")
