@@ -13,7 +13,7 @@ public interface INoticiaService {
 
 	
 	public void save( List<Noticia> noticias );	
-	public Paginacion<Noticia> findWithFilter( Date fecha, String fuente, String titulo, int pagina );	
+	public Paginacion<Noticia> findWithFilter( Date fecha, String fuente, String titulo, int pagina, boolean ordenFuenteAsc );	
 	public List<Noticia> getNoticiasDesdeApi( Date fecha );
 	public boolean existeCopiaLocal( Date fecha );
 }

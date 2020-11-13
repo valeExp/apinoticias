@@ -52,8 +52,8 @@ public class NoticiaServiceImpl implements INoticiaService {
 
 
 	@Override
-	public Paginacion<Noticia> findWithFilter(Date fecha, String fuente, String titulo, int pagina) {
-		return noticiaDinamicaRepository.noticiasConFiltro(fuente, fecha, titulo, pagina);
+	public Paginacion<Noticia> findWithFilter(Date fecha, String fuente, String titulo, int pagina, boolean ordenFuenteAsc ) {
+		return noticiaDinamicaRepository.noticiasConFiltro(fuente, fecha, titulo, pagina, ordenFuenteAsc);
 	}
 
 

@@ -31,7 +31,7 @@ class NoticiaDinamicaRepositoryTest {
 		
 		Date fecha = Utilities.stringToDate("05/11/2020", Utilities.FORMAT_DATE);
 		
-		Paginacion<Noticia> paginacion = noticiaDinamicaRepository.noticiasConFiltro( null, null, null, -1 );
+		Paginacion<Noticia> paginacion = noticiaDinamicaRepository.noticiasConFiltro( null, null, null, -1, true );
 		
 		System.out.println( paginacion );
 		

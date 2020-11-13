@@ -33,7 +33,7 @@ public class NoticiaController {
 	@Autowired
 	INoticiaService noticiaService;
 
-	@ApiOperation(value = "Puebla la base de datos local con noticias sobre Coronavirus en Argetina", nickname = "desafio1")
+	@ApiOperation(value = "Puebla la base de datos local con noticias sobre Coronavirus en Argentina", nickname = "desafio1")
 	@GetMapping("/noticias/poblar-base-datos")
 	public ResponseEntity<?>  poblarBaseDatos( @ApiParam( name = "fecha", type = "String", value = "formato YYYY-MM-DD",
 								 example = "2020-11-10",  required = true) 
@@ -88,10 +88,17 @@ public class NoticiaController {
 			@RequestParam(required = false ) String titulo,
 			@ApiParam( name = "fuente", type = "String", value = "Fuente de la noticia", example="",  required = false)
 			@RequestParam(required = false ) String fuente,
-			@RequestParam(required = false ) Integer pagina ) {
+			@ApiParam( name = "pagina", type = "String", value = "pagina", example="",  required = false)
+			@RequestParam(required = false ) Integer pagina,
+			@ApiParam( name = "ordenFuenteAsc", type = "boolean", value = "ordenFuenteAsc", example="",  required = false)
+			@RequestParam(required = false ) Boolean ordenFuenteAsc) {
 			
 			
-			Paginacion<Noticia> noticias = noticiaService.findWithFilter( fecha, fuente, titulo, pagina!=null?pagina:1 );
+			Paginacion<Noticia> noticias = noticiaService.findWithFilter( fecha, 
+																		  fuente,
+																		  titulo, 
+																		  pagina!=null?pagina:1,
+																		  ordenFuenteAsc!=null?ordenFuenteAsc:true );
 		
 		   return new ResponseEntity<Paginacion<Noticia>>( noticias, HttpStatus.OK);
 		
