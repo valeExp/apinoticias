@@ -11,9 +11,9 @@ import com.midasconsultores.entities.Noticia;
 
 public interface INoticiaService {
 
-	public List<Noticia> findAll();
-	public void save( List<Noticia> noticias );
-	public Page<Noticia> findByTituloContaining( String titulo, Pageable pageable );
-	public Paginacion<Noticia> findWithFilter( Date fecha, String fuente, String titulo, int pagina );
 	
+	public void save( List<Noticia> noticias );	
+	public Paginacion<Noticia> findWithFilter( Date fecha, String fuente, String titulo, int pagina );	
+	public List<Noticia> getNoticiasDesdeApi( Date fecha );
+	public boolean existeCopiaLocal( Date fecha );
 }

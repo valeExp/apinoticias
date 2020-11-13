@@ -41,7 +41,7 @@ public class ClienteApiRestTemplateImpl implements IClienteApi {
     }
     
     @Override
-	public Paginacion<Noticia> findAll( Date fecha, int pagina ) {    	
+	public WraperArticle getPagina( Date fecha, int pagina ) {    	
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -57,7 +57,9 @@ public class ClienteApiRestTemplateImpl implements IClienteApi {
 		
 		WraperArticle wraper = response.getBody();
 		
-		return NoticiaMapper.toEntity(wraper);		
+		//return NoticiaMapper.toEntity(wraper);	
+		
+		return wraper;
 	
 	}
     
@@ -73,7 +75,7 @@ public class ClienteApiRestTemplateImpl implements IClienteApi {
 		        .queryParam("endDate", fechaFormatoApi)
 		        .queryParam("search", "covid coronavirus")
 		        .queryParam("categories", "ULTIMAS_NOTICIAS,LOCALES,NACIONALES,ECONOMIA,POLITICA,POLICIALES,SOCIEDAD,SALUD")
-		        .queryParam("pagina", pagina);
+		        .queryParam("page", pagina);
     	
     	return builder;
     	

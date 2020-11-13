@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table( name="noticias" )
@@ -17,14 +18,21 @@ public class Noticia implements Serializable {
 	@Id
 	@Column( length = 30 )
 	private String id;
+	
 	@Column( length = 40 )
 	private String fuente;
-	@Column( length = 40 )
+	
+	@Column( length = 40 )	
+	@NotEmpty
 	private String categoria;
-	@Column( length = 200 )
+	
+	@Column( length = 200 )	
+	@NotEmpty
 	private String titulo;
+	
 	@Column( length = 200 )
 	private String urlNoticia;
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date fechaPublicacion;
 

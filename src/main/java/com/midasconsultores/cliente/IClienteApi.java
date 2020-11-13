@@ -10,6 +10,6 @@ import com.midasconsultores.entities.Noticia;
 
 public interface IClienteApi {
 	
-	public Paginacion<Noticia> findAll( Date fecha, int pagina ) ;
+	public WraperArticle getPagina( Date fecha, int pagina ) ;
 
 }

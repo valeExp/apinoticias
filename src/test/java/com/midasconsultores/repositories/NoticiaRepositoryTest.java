@@ -1,5 +1,7 @@
 package com.midasconsultores.repositories;
 
+import java.util.Date;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.midasconsultores.entities.Noticia;
+import com.midasconsultores.services.INoticiaService;
+import com.midasconsultores.utilities.Utilities;
 
 
 
@@ -20,17 +24,24 @@ class NoticiaRepositoryTest {
 	
 	@Autowired
 	NoticiaRepository noticiaRepository;
+	
+	@Autowired
+	INoticiaService noticiaService;
 
 	@Test
 	void test() {
 		
-		Pageable firstPageWithTwoElements = PageRequest.of(0, 2);
+		Date fecha = Utilities.stringToDate("05/11/2020", Utilities.FORMAT_DATE);
 		
-		Page<Noticia> pageNotis = noticiaRepository.findByTituloContaining("Coronavirus", firstPageWithTwoElements);
+		System.out.println( noticiaRepository.countByFecha(  fecha )  );
 		
-		System.out.println( pageNotis.getTotalElements() );
 		
-		pageNotis.toList().forEach( n -> System.out.println( n.getTitulo() ));
+		fecha = Utilities.stringToDate("10/11/2020", Utilities.FORMAT_DATE);
+		
+		System.out.println( noticiaRepository.countByFecha(  fecha )  );
+		
+		
+		System.out.println( "cantidad de " + noticiaService.getNoticiasDesdeApi(  fecha ).size() );
 		
 	}
 

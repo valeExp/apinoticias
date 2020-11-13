@@ -27,7 +27,7 @@ public class SwaggerConfig {
 	}
 
 	private ApiInfo apiInfo() {
-		return new ApiInfo("REST API con Java Spring Boot", "Demostracion de uso de Tecnoloigias Java y SpringBoot.", "0.0.1-SNAPSHOT",
+		return new ApiInfo("Api de Noticias Jornalia", "Demostracion de uso de Tecnoloigias Java y SpringBoot.", "0.0.1-SNAPSHOT",
 				"",
 				new Contact("Valeria del Valle Torres", "", "torresvalemdz@gmail.com"),
 				"", "", Collections.emptyList());

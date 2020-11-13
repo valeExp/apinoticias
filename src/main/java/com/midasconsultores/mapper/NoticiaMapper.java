@@ -25,7 +25,7 @@ public class NoticiaMapper {
 		 noticia.setUrlNoticia( article.getSourceUrl() );
 		 
 		 
-		 DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");		  
+		 DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");		  
 		 Date date = null;
 		try {
 			date = df1.parse(article.getPublishedAt());

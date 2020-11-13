@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.midasconsultores.dto.Paginacion;
+import com.midasconsultores.dto.Respuesta;
 import com.midasconsultores.entities.Noticia;
 import com.midasconsultores.services.INoticiaService;
+import com.midasconsultores.utilities.Utilities;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,17 +33,32 @@ public class NoticiaController {
 	@Autowired
 	INoticiaService noticiaService;
 
-	@ApiOperation(value = "Lista todas las Noticias referente a covid-19 en Arg por fecha", nickname = "desafio1")
+	@ApiOperation(value = "Puebla la base de datos local con noticias sobre Coronavirus en Argetina", nickname = "desafio1")
 	@GetMapping("/noticias/poblar-base-datos")
-	public ResponseEntity<?> getNoticias( @ApiParam( name = "fecha", type = "String", value = "formato YYYY-MM-DD",
-										example = "2020-11-10",  required = true) 
-							            @RequestParam(required = true ) String fecha ) {
+	public ResponseEntity<?>  poblarBaseDatos( @ApiParam( name = "fecha", type = "String", value = "formato YYYY-MM-DD",
+								 example = "2020-11-10",  required = true) 
+							     @RequestParam(required = true )  @DateTimeFormat(pattern = "yyyy-MM-dd") Date  fecha ) {
 		
+		Respuesta respuesta;
 		
-		List<Noticia> noticias = noticiaService.findAll();		
-		noticiaService.save(noticias);
+		if( !noticiaService.existeCopiaLocal(fecha ) ) {
+			List<Noticia> noticias = noticiaService.getNoticiasDesdeApi(fecha);		
+			if ( !noticias.isEmpty() ) {
+				noticiaService.save(noticias);	
+				respuesta = new Respuesta(true,"La base se poblo para el dia " 
+						   .concat(	Utilities.dateToString(fecha, Utilities.FORMAT_DATE ) ) );	
+			}else {
+				respuesta = new Respuesta(true,"No se encontraron registros en el api para el dia " 
+						   .concat(	Utilities.dateToString(fecha, Utilities.FORMAT_DATE ) ) );	
+			}
+			
+		}else {
+			respuesta = new Respuesta(true,"La base ya esta poblada para el dia " 
+										   .concat(	Utilities.dateToString(fecha, Utilities.FORMAT_DATE ) ) );			
+		}
 		
-		return new ResponseEntity<List<Noticia>>( noticias, HttpStatus.OK );
+		return new ResponseEntity<Respuesta>( respuesta, HttpStatus.OK);
+				
 	}
 	
 	

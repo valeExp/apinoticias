@@ -30,7 +30,6 @@ class IClienteApiTest {
 		
 		System.out.println("fechaFormatoApi: " +fechaFormatoApi );
 		
-		System.out.println( "cuantas notis" + clienteApi.findAll( fecha, 1  ) );
 		
 		System.out.println("Entro");
 		
