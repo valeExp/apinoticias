@@ -1,5 +1,6 @@
 package com.midasconsultores.cliente;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,8 +17,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.midasconsultores.adapters.NoticiaAdapter;
-import com.midasconsultores.dto.Paginacion;
 import com.midasconsultores.handler.RestTemplateResponseErrorHandler;
+import com.midasconsultores.models.Categoria;
+import com.midasconsultores.models.Fuente;
 import com.midasconsultores.models.Noticia;
 import com.midasconsultores.utilities.Utilities;
 
@@ -39,27 +41,7 @@ public class ClienteApiRestTemplateImpl implements IClienteApi {
           .errorHandler(new RestTemplateResponseErrorHandler())
           .build();
     }
-    
-    @Override
-	public PaginacionArticle getPaginaArticles( Date fecha, int pagina ) {    	
-		
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
-		HttpEntity<?> entity = new HttpEntity<>(headers);	
-
-		UriComponentsBuilder builder = crearCriterioBusquedaArticles( fecha, pagina );
-		
-		HttpEntity<PaginacionArticle> response = cliente.exchange(
-		        builder.toUriString(), 
-		        HttpMethod.GET, 
-		        entity, 
-		        PaginacionArticle.class);
-		
-		PaginacionArticle paginacion = response.getBody();
-		
-		return paginacion;
-	
-	}
+ 
     
     public UriComponentsBuilder crearCriterioBusquedaArticles( Date fecha, int pagina  ) {
     	
@@ -72,14 +54,14 @@ public class ClienteApiRestTemplateImpl implements IClienteApi {
 		        .queryParam("startDate", fechaFormatoApi)
 		        .queryParam("endDate", fechaFormatoApi)
 		        .queryParam("search", "covid coronavirus")
-		        .queryParam("categories", "ULTIMAS_NOTICIAS,LOCALES,NACIONALES,ECONOMIA,POLITICA,POLICIALES,SOCIEDAD,SALUD")
+		        .queryParam("categories",  Categoria.todasMenosExcluidasStr( Categoria.INTERNACIONALES ) )
 		        .queryParam("page", pagina);
     	
     	return builder;
     	
     }
 
-	@Override
+	
 	public PaginacionProvider getPaginaProviders( int pagina  ) {
 		
 		final String URL_PROVIDERS = urlBase.concat("/api/v1/providers");		
@@ -105,6 +87,66 @@ public class ClienteApiRestTemplateImpl implements IClienteApi {
 		
 	}
 
+	@Override
+	public List<Noticia> getNoticias( Date fecha  ) {
+		
+		List<Noticia> noticias = new ArrayList<>();		
+		
+		PaginacionArticle pagina = getPaginaArticles( fecha, 1 );		
+		noticias.addAll(  articlesToNoticias( pagina.getArticles() ) );
+		
+		for( int i = 2; i <= pagina.getPages(); i++ ) {			
+			pagina = getPaginaArticles(fecha, i );			
+			noticias.addAll( articlesToNoticias( pagina.getArticles() ) );
+		}
+		
+		return noticias;
+	}
 	
+	public PaginacionArticle getPaginaArticles( Date fecha, int pagina ) {    	
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+		HttpEntity<?> entity = new HttpEntity<>(headers);	
+
+		UriComponentsBuilder builder = crearCriterioBusquedaArticles( fecha, pagina );
+		
+		HttpEntity<PaginacionArticle> response = cliente.exchange(
+		        builder.toUriString(), 
+		        HttpMethod.GET, 
+		        entity, 
+		        PaginacionArticle.class);
+		
+		PaginacionArticle paginacion = response.getBody();
+		
+		return paginacion;
+	
+	}
+
+	private List<Noticia> articlesToNoticias( List<Article> articles ){		    	
+	   return articles.stream().map( NoticiaAdapter::articleToNoticia ).collect( Collectors.toList() );	    	
+	}
+
+
+	@Override
+	public List<Fuente> getFuentes() {
+		
+		List<Fuente> fuentes = new ArrayList<>();			
+		PaginacionProvider pagina =  getPaginaProviders( 1 );
+		fuentes.addAll(  providersToFuentes( pagina.getProviders() ) );
+		
+		for( int i = 2; i <= pagina.getPages(); i++ ) {			
+			pagina = getPaginaProviders( i );			
+			fuentes.addAll( providersToFuentes( pagina.getProviders() ) );
+		}		
+		
+		return fuentes;
+	}
+	
+	private List<Fuente> providersToFuentes( List<Provider > providers ) {
+		 return  providers .stream()
+   			 .map( NoticiaAdapter:: providerToFuente )
+   			 .collect( Collectors.toList() );
+	}
 
 }

@@ -15,16 +15,7 @@ import com.midasconsultores.models.Noticia;
 
 
 public interface NoticiaRepository extends JpaRepository<Noticia,String>{
-	
-	//Para Oracle
-	/*@Query(value = "SELECT count(n.id) FROM Noticia n where trunc( n.fechaPublicacion ) = trunc(:fecha) ")
-	public Long countByFecha(@Param(value = "fecha") Date fecha);*/
-	
-	
-	
-	@Query(value = "SELECT count(n.id) FROM Noticia n where  CAST(n.fechaPublicacion AS date) =  CAST(:fecha AS date) ")
-	public Long countByFecha(@Param(value = "fecha") Date fecha);
-	
-	
-	public Paginacion<Noticia> getNoticiasConFiltro( Map<String, Object> condiciones, boolean ordenFuenteAsc );
+		
+	public Long countByFechaPublicacionBetween( Date fechaInicio, Date fechaFin ); 	
+	public Paginacion<Noticia> getNoticiasConFiltro( Map<String, Object> condiciones, boolean ordenarByFuenteAsc );
 }

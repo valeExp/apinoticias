@@ -22,21 +22,21 @@ public class Noticia implements Serializable {
 	@Column(length = 30)
 	private String id;
 
-	@Column(length = 40)
+	@Column( length = 40, nullable = false )
 	@NotEmpty
 	private String categoria;
 
-	@Column(length = 200)
+	@Column( length = 200, nullable = false )
 	@NotEmpty
 	private String titulo;
 
-	@Column(length = 200, name = "url_noticia")
+	@Column( length = 200, name = "url_noticia", nullable = false )
 	private String urlNoticia;
 
 	private String Urlimagen;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "fecha_publicacion")
+	@Column(name = "fecha_publicacion", nullable = false )
 	private Date fechaPublicacion;
 
 	@OneToOne(fetch = FetchType.EAGER)

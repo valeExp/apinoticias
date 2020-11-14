@@ -1,5 +1,6 @@
 package com.midasconsultores.controllers;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.midasconsultores.cliente.IClienteApi;
 import com.midasconsultores.dto.Paginacion;
 import com.midasconsultores.dto.Respuesta;
 import com.midasconsultores.exceptions.ValidacionProcesoException;
+import com.midasconsultores.models.Fuente;
 import com.midasconsultores.models.Noticia;
 import com.midasconsultores.models.ParamsBusquedaNoticia;
 import com.midasconsultores.services.INoticiaService;
@@ -36,6 +39,9 @@ public class NoticiaController {
 	
 	@Autowired
 	INoticiaService noticiaService;
+	
+	@Autowired
+	IClienteApi  clienteApi;
 
 	@ApiOperation(value = "Puebla la base de datos local con noticias sobre Coronavirus en Argentina", nickname = "desafio1")
 	@GetMapping("/noticias/poblar-base-datos")
@@ -43,36 +49,45 @@ public class NoticiaController {
 								 example = "2020-11-10",  required = true) 
 							     @RequestParam(required = true )  @DateTimeFormat(pattern = "yyyy-MM-dd") Date  fecha ) {
 		
-		Respuesta respuesta;
+		List<String> errores = new ArrayList<>();		
+		String mensaje = "";		
 		
-		if( !noticiaService.existeCopiaLocal(fecha ) ) {
+		if( !noticiaService.existeCopiaLocalNoticias(fecha ) ) {			
 			
-			try {
+			List<Noticia> noticias = clienteApi.getNoticias(fecha);		
+			if ( !noticias.isEmpty() ) {
+				
+				errores.addAll( controlarCopiaLocalFuentes() );
+				errores.addAll( noticiaService.saveNoticias(noticias) );	
+				mensaje = "Se registraron las noticias " + ( errores.isEmpty()? "sin errores":"con errores" ); 
+						   					
+			}else {				
+				mensaje = "No se encontraron noticias en el api para el dia "; 						   				
+			}				
 			
-				List<Noticia> noticias = noticiaService.getNoticiasDesdeApi(fecha);		
-				if ( !noticias.isEmpty() ) {
-					noticiaService.save(noticias);	
-					respuesta = new Respuesta(true,"La base se poblo para el dia " 
-							   .concat(	Utilities.dateToString(fecha, Utilities.FORMAT_DATE ) ) );	
-				}else {
-					respuesta = new Respuesta(true,"No se encontraron registros en el api para el dia " 
-							   					  .concat(	Utilities.dateToString(fecha, Utilities.FORMAT_DATE ) ) );	
-				}
-			}catch( ValidacionProcesoException ex ) {
-				respuesta = new Respuesta(false, ex.getMessage()
-											     .concat( Utilities.dateToString(fecha, Utilities.FORMAT_DATE ) ) );
-			}		
-			
-		}else {
-			respuesta = new Respuesta(true,"La base ya esta poblada para el dia " 
-										   .concat(	Utilities.dateToString(fecha, Utilities.FORMAT_DATE ) ) );			
+		}else {			
+			mensaje = "Noticias existentes en base Local";				
 		}
+		
+		Respuesta respuesta = new Respuesta( errores.isEmpty(), mensaje, errores );
 		
 		return new ResponseEntity<Respuesta>( respuesta, HttpStatus.OK);
 				
 	}
 	
+	private List<String> controlarCopiaLocalFuentes() {
+		
+		List<String> errores = new ArrayList<>();
+		
+		if( !noticiaService.existeCopiaLocalFuentes() ) {				
+			List<Fuente> fuentes =  clienteApi.getFuentes();
+			errores = noticiaService.saveFuentes(fuentes); 
+		}	
+				
+		return errores;		
+	}
 	
+		
 	
 	@GetMapping("/noticias")
 	public ResponseEntity<?> getNoticiasConFiltro( 
@@ -84,14 +99,14 @@ public class NoticiaController {
 			@RequestParam(required = false ) String fuente,
 			@ApiParam( name = "pagina", value = "pagina", example="",  required = false)
 			@RequestParam(required = false, value = "pagina"  ) int  pagina,
-			@ApiParam( name = "ordenFuenteAsc", type = "boolean", value = "ordenFuenteAsc", example="",  required = false)
-			@RequestParam(required = false, defaultValue = "true" ) Boolean ordenFuenteAsc) {
+			@ApiParam( name = "ordenarByFuenteAsc", type = "boolean", value = "ordenarByFuenteAsc", example="",  required = false)
+			@RequestParam(required = false, defaultValue = "true" ) Boolean ordenarByFuenteAsc) {
 		
 		    if( pagina <= 0 ) {
 		    	pagina = 1;
 		    }
 			
-			System.out.println("pagina: " + pagina + " ordenFuenteAsc: " + ordenFuenteAsc);
+			System.out.println("pagina: " + pagina + " ordenFuenteAsc: " + ordenarByFuenteAsc);
 			
 			
 
@@ -112,10 +127,12 @@ public class NoticiaController {
 			condiciones.put( ParamsBusquedaNoticia.pagina.name() , pagina );
 			
 		
-			Paginacion<Noticia> noticias = noticiaService.getNoticiasConFiltro( condiciones,  ordenFuenteAsc );
+			Paginacion<Noticia> noticias = noticiaService.getNoticiasConFiltro( condiciones,  ordenarByFuenteAsc );
 		
 		    return new ResponseEntity<Paginacion<Noticia>>( noticias, HttpStatus.OK);
 		
 	}
+	
+	
 	
 }

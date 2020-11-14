@@ -28,7 +28,7 @@ class INoticiaServiceTest {
 	
 	@Test
 	void test() {
-		noticiaService.getFuentesDesdeApi();
+		//noticiaService.getFuentesDesdeApi();
 	}
 
 }

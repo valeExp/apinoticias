@@ -31,17 +31,7 @@ class NoticiaRepositoryTest {
 	@Test
 	void test() {
 		
-		Date fecha = Utilities.stringToDate("05/11/2020", Utilities.FORMAT_DATE);
 		
-		System.out.println( noticiaRepository.countByFecha(  fecha )  );
-		
-		
-		fecha = Utilities.stringToDate("10/11/2020", Utilities.FORMAT_DATE);
-		
-		System.out.println( noticiaRepository.countByFecha(  fecha )  );
-		
-		
-		System.out.println( "cantidad de " + noticiaService.getNoticiasDesdeApi(  fecha ).size() );
 		
 	}
 

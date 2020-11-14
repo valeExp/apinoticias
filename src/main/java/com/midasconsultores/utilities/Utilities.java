@@ -8,22 +8,22 @@ import java.util.GregorianCalendar;
 public class Utilities {
 	
 	 public static final DateFormatSymbols formatSymbols = new DateFormatSymbols(new java.util.Locale("es", "ES"));
-
-	 public static final String FORMAT_DATE = "dd/MM/yyyy";
-	 
-	 public static final String FORMATO_API = "yyyy-MM-dd";
+	 public static final String FORMAT_DATE = "dd/MM/yyyy";	 
+	 public static final String FORMATO_API = "yyyy-MM-dd";	 
+	 public static final String FORMATO_ISO = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	
 	 public static Date stringToDate( String fechaStr, String pattern ){
 	        SimpleDateFormat template=null;
 	        Date date = null;
 	        if (pattern != null){
 	            template = new SimpleDateFormat(pattern);
+	            try{             
+		            date = template.parse( fechaStr );            
+		        }catch(java.text.ParseException e){
+		            date = null;
+		        }
 	        }	        
-	        try{             
-	            date = template.parse( fechaStr );            
-	        }catch(java.text.ParseException e){
-	            date = null;
-	        }
+	        
 	        return date;
 	 }
 	 
@@ -41,18 +41,18 @@ public class Utilities {
 	}
 	 
 	 public static String dateToString(java.util.Date fecha, String pattern){
-	        SimpleDateFormat template = null;
-	        //Creo el format de la fecha del sistema
+		 	String date = "";
+	        SimpleDateFormat template = null;	        
 	        if (pattern != null){
 	            template = new SimpleDateFormat( pattern );
+	            if (fecha != null) {
+	            	date =  template.format(fecha).toString();
+		        } else {
+		        	date = "";
+		        }
 	        }
-	        if (fecha != null) {
-	            return template.format(fecha).toString();
-	        } else {
-	            return new String("");
-	        }
-	    }
-	    
+	        return date;
+	 }	    
 		
 	
 }
