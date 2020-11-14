@@ -8,9 +8,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.midasconsultores.cliente.Article;
-import com.midasconsultores.cliente.WraperArticle;
+import com.midasconsultores.cliente.PaginacionArticle;
 import com.midasconsultores.dto.Paginacion;
-import com.midasconsultores.entities.Noticia;
+import com.midasconsultores.models.Fuente;
+import com.midasconsultores.models.Noticia;
 
 public class NoticiaAdapter {
 	
@@ -23,6 +24,7 @@ public class NoticiaAdapter {
 		 //noticia.setFuente( article.getProvider().getName() );
 		 noticia.setTitulo(  article.getTitle() );
 		 noticia.setUrlNoticia( article.getSourceUrl() );
+		 noticia.setUrlimagen( article.getImageUrl()  );
 		 
 		 
 		 DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");		  
@@ -40,14 +42,5 @@ public class NoticiaAdapter {
 	 }
 	
 	
-	public static Paginacion<Noticia> wraperArticleTOPaginacion( WraperArticle wraper ) {
-		
-		List<Noticia> noticias =  wraper.getArticles().stream()
-				  .map(NoticiaAdapter::articleToNoticia)
-				  .collect( Collectors.toList() );
-		
-		Paginacion<Noticia> paginacion = new Paginacion<Noticia>( wraper.getPage(),wraper.getPages(), noticias, 50  );		
-		
-		return paginacion;		
-	}
+
 }

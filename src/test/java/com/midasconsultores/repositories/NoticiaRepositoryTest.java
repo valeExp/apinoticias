@@ -11,7 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.midasconsultores.entities.Noticia;
+import com.midasconsultores.models.Noticia;
 import com.midasconsultores.services.INoticiaService;
 import com.midasconsultores.utilities.Utilities;
 

@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.midasconsultores.dto.Paginacion;
-import com.midasconsultores.entities.Noticia;
+import com.midasconsultores.models.Noticia;
 
 public interface INoticiaService {
 
@@ -17,4 +17,7 @@ public interface INoticiaService {
 	public Paginacion<Noticia> getNoticiasConFiltro( Map<String, Object> condiciones, boolean ordenFuenteAsc );	
 	public List<Noticia> getNoticiasDesdeApi( Date fecha );
 	public boolean existeCopiaLocal( Date fecha );
+	
+	public boolean getFuentesDesdeApi();
+	
 }

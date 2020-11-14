@@ -1,4 +1,4 @@
-package com.midasconsultores.entities;
+package com.midasconsultores.models;
 
 import java.io.Serializable;
 
@@ -6,6 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name="fuentes")
@@ -13,8 +14,10 @@ public class Fuente implements Serializable{
 	
 	@Id
 	String id;
+	@NotEmpty	
 	@Column(length = 30 )
 	String nombre;
+	@NotEmpty
 	@Column(length = 30 )
 	String alcance;
 		

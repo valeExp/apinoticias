@@ -2,14 +2,14 @@ package com.midasconsultores.cliente;
 
 import java.util.List;
 
-public class WraperArticle {
+public class PaginacionArticle {
 	
 	List<Article> articles;
 	long total;
 	int page; 
 	int pages;
 		
-	public WraperArticle() {
+	public PaginacionArticle() {
 	
 	}
 	

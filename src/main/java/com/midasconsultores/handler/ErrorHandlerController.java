@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import com.midasconsultores.exceptions.NotFoundException;
+import com.midasconsultores.exceptions.ValidacionProcesoException;
 import com.midasconsultores.dto.Error;
 
 @ControllerAdvice
@@ -129,6 +130,19 @@ public class ErrorHandlerController {
 		  }  
 		  
 		  return new ResponseEntity<Error> ( error, HttpStatus.BAD_REQUEST ); 
+	}
+	
+	@ExceptionHandler
+	public ResponseEntity<?> handleValidacionProcesoException( HttpServletRequest request, ValidacionProcesoException ex ){
+		  Error error = new Error();
+		  error.setStatus( String.valueOf( HttpStatus.CONFLICT.value() ) );
+		  error.setError(  HttpStatus.CONFLICT.name() );
+		  error.setPath( request.getRequestURI() );
+		  error.setTimestamp( LocalDateTime.now().toString() );		
+		  
+		  error.setMensaje( ex.getMessage() != null? ex.getMessage() : "S/D" ); 
+		  
+		  return new ResponseEntity<Error> ( error, HttpStatus.CONFLICT ); 
 	}
 	
 }

@@ -18,15 +18,15 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.midasconsultores.dto.Paginacion;
-import com.midasconsultores.entities.Noticia;
-import com.midasconsultores.entities.ParamsBusquedaNoticia;
+import com.midasconsultores.models.Noticia;
+import com.midasconsultores.models.ParamsBusquedaNoticia;
 import com.midasconsultores.services.INoticiaService;
 import com.midasconsultores.utilities.Utilities;
 
 @Repository
 public class NoticiaRepositoryImpl {
 	
-	public final int pageSize = 5;
+	public final int pageSize = 50;
 
 	@PersistenceContext
 	private EntityManager em;
@@ -51,9 +51,12 @@ public class NoticiaRepositoryImpl {
 									 :cb.desc(noticias.get("fuente").get("id")) );
 		
 		int pagina = (Integer)condiciones.get( ParamsBusquedaNoticia.pagina.name()) ;
+		long total = calcularTotalRegistros( condiciones );
+		int pages =  calcularTotalPages( total );
 		
 		return new Paginacion<Noticia>( pagina,
-				 						calcularTotalRegistros( condiciones ),
+										pages,
+										total,
 				 						getPagina( consultaQuery, pagina ),
 										pageSize);
 	}
@@ -73,7 +76,7 @@ public class NoticiaRepositoryImpl {
 		return  typedQuery.getResultList();
 	}
 	
-	private long calcularTotalRegistros(  Map<String, Object> condiciones ) {
+	public long calcularTotalRegistros(  Map<String, Object> condiciones ) {
 		
 		CriteriaBuilder cb = em.getCriteriaBuilder();		
 		CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
@@ -82,7 +85,7 @@ public class NoticiaRepositoryImpl {
 		List<Predicate> predicados = crearPredicados(  cb, noticias, condiciones );		
 
 		if (predicados.isEmpty()) {
-			countQuery.select(cb.count(countQuery.from(Noticia.class)));
+			countQuery.select(cb.count(noticias));
 						
 		} else {
 			countQuery.select(cb.count(noticias)).where(predicados.toArray(new Predicate[predicados.size()]));
@@ -116,6 +119,16 @@ public class NoticiaRepositoryImpl {
 		}
 		
 		return predicados;
+	}
+	
+	private int calcularTotalPages( long total ) {		
+		int pages = 0;		
+		if( total > 0 ) {
+			long resto = total % pageSize;
+			
+			pages = (resto > 0) ? (int)(total / pageSize) + 1:(int)(total / pageSize);
+		}
+		return 	pages;	
 	}
 
 }

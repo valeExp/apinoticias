@@ -17,8 +17,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import com.midasconsultores.adapters.NoticiaAdapter;
 import com.midasconsultores.dto.Paginacion;
-import com.midasconsultores.entities.Noticia;
 import com.midasconsultores.handler.RestTemplateResponseErrorHandler;
+import com.midasconsultores.models.Noticia;
 import com.midasconsultores.utilities.Utilities;
 
 @Component("clienteRest")
@@ -41,7 +41,7 @@ public class ClienteApiRestTemplateImpl implements IClienteApi {
     }
     
     @Override
-	public WraperArticle getPagina( Date fecha, int pagina ) {    	
+	public PaginacionArticle getPaginaArticles( Date fecha, int pagina ) {    	
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -49,17 +49,15 @@ public class ClienteApiRestTemplateImpl implements IClienteApi {
 
 		UriComponentsBuilder builder = crearCriterioBusquedaArticles( fecha, pagina );
 		
-		HttpEntity<WraperArticle> response = cliente.exchange(
+		HttpEntity<PaginacionArticle> response = cliente.exchange(
 		        builder.toUriString(), 
 		        HttpMethod.GET, 
 		        entity, 
-		        WraperArticle.class);
+		        PaginacionArticle.class);
 		
-		WraperArticle wraper = response.getBody();
+		PaginacionArticle paginacion = response.getBody();
 		
-		//return NoticiaMapper.toEntity(wraper);	
-		
-		return wraper;
+		return paginacion;
 	
 	}
     
@@ -80,5 +78,33 @@ public class ClienteApiRestTemplateImpl implements IClienteApi {
     	return builder;
     	
     }
+
+	@Override
+	public PaginacionProvider getPaginaProviders( int pagina  ) {
+		
+		final String URL_PROVIDERS = urlBase.concat("/api/v1/providers");		
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+		HttpEntity<?> entity = new HttpEntity<>(headers);	
+
+		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(URL_PROVIDERS)
+			   .queryParam("apiKey", apiKey)
+		       .queryParam("page", pagina);
+		
+		HttpEntity<PaginacionProvider> response = cliente.exchange(
+		        builder.toUriString(), 
+		        HttpMethod.GET, 
+		        entity, 
+		        PaginacionProvider.class);
+		
+		PaginacionProvider paginacion = response.getBody();
+		
+		return paginacion;
+				
+		
+	}
+
+	
 
 }

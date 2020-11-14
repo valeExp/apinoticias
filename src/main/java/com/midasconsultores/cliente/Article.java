@@ -8,6 +8,7 @@ public class Article {
 	String title;
 	String sourceUrl;
 	String publishedAt;
+	String imageUrl;
 
 	public Article() {
 
@@ -60,12 +61,22 @@ public class Article {
 	public void setPublishedAt(String publishedAt) {
 		this.publishedAt = publishedAt;
 	}
+	
+	
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
 
 	@Override
 	public String toString() {
 		return "Article [_id=" + _id + ", provider=" + provider + ", category=" + category + ", title=" + title
-				+ ", sourceUrl=" + sourceUrl + ", publishedAt=" + publishedAt + "]";
+				+ ", sourceUrl=" + sourceUrl + ", publishedAt=" + publishedAt + ", imageUrl=" + imageUrl + "]";
 	}
-	
+
+
 
 }

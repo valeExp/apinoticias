@@ -14,8 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.midasconsultores.dto.Paginacion;
-import com.midasconsultores.entities.Noticia;
-import com.midasconsultores.entities.ParamsBusquedaNoticia;
+import com.midasconsultores.models.Noticia;
+import com.midasconsultores.models.ParamsBusquedaNoticia;
 import com.midasconsultores.utilities.Utilities;
 
 
@@ -38,9 +38,9 @@ class NoticiaRepositoryImplTest {
 		
 		
 		Map<String, Object> condiciones = new HashMap<>();
-		condiciones.put( ParamsBusquedaNoticia.fuente.name(),"TN" );
-		condiciones.put( ParamsBusquedaNoticia.fecha.name(),fecha );
-		condiciones.put( ParamsBusquedaNoticia.titulo.name() ,"Coronavirus" );
+		condiciones.put( ParamsBusquedaNoticia.fuente.name(),"LaNacion" );
+		//condiciones.put( ParamsBusquedaNoticia.fecha.name(),fecha );
+		//condiciones.put( ParamsBusquedaNoticia.titulo.name() ,"Coronavirus" );
 		condiciones.put( ParamsBusquedaNoticia.pagina.name() , 1);
 		
 		
@@ -50,7 +50,10 @@ class NoticiaRepositoryImplTest {
 		Paginacion<Noticia> paginacion = noticiaDinamicaRepository.getNoticiasConFiltro( condiciones, true );
 		
 		System.out.println( paginacion );
+		
+		System.out.println( "total : " + noticiaDinamicaRepository.calcularTotalRegistros(condiciones) );
 
+		
 		
 	}
 

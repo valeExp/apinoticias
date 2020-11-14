@@ -1,4 +1,4 @@
-package com.midasconsultores.entities;
+package com.midasconsultores.models;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -15,33 +15,41 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
 
 @Entity
-@Table( name="noticias" )
+@Table(name = "noticias")
 public class Noticia implements Serializable {
 
 	@Id
-	@Column( length = 30 )
-	private String id;	
-	
-	@Column( length = 40 )	
+	@Column(length = 30)
+	private String id;
+
+	@Column(length = 40)
 	@NotEmpty
 	private String categoria;
-	
-	@Column( length = 200 )	
+
+	@Column(length = 200)
 	@NotEmpty
 	private String titulo;
-	
-	@Column( length = 200 )
+
+	@Column(length = 200, name = "url_noticia")
 	private String urlNoticia;
-	
+
+	private String Urlimagen;
+
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "fecha_publicacion")
 	private Date fechaPublicacion;
-	
-	@OneToOne( fetch = FetchType.EAGER)
+
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "fuente_id", nullable = false)
-	Fuente fuente; 
+	Fuente fuente;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "fecha_creacion")
+	private Date fechaCreacion;
 
 	public Noticia() {
-		this.id="";
+		this.id = "";
+		this.fechaCreacion = new Date();
 	}
 
 	public String getId() {
@@ -52,7 +60,6 @@ public class Noticia implements Serializable {
 		this.id = id;
 	}
 
-	
 	public String getCategoria() {
 		return categoria;
 	}
@@ -84,8 +91,7 @@ public class Noticia implements Serializable {
 	public void setFechaPublicacion(Date fechaPublicacion) {
 		this.fechaPublicacion = fechaPublicacion;
 	}
-	
-	
+
 	public Fuente getFuente() {
 		return fuente;
 	}
@@ -94,15 +100,29 @@ public class Noticia implements Serializable {
 		this.fuente = fuente;
 	}
 
-    
+	public String getUrlimagen() {
+		return Urlimagen;
+	}
+
+	public void setUrlimagen(String urlimagen) {
+		Urlimagen = urlimagen;
+	}
+
+	public Date getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(Date fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
 	@Override
 	public String toString() {
 		return "Noticia [id=" + id + ", categoria=" + categoria + ", titulo=" + titulo + ", urlNoticia=" + urlNoticia
-				+ ", fechaPublicacion=" + fechaPublicacion + ", fuente=" + fuente + "]";
+				+ ", Urlimagen=" + Urlimagen + ", fechaPublicacion=" + fechaPublicacion + ", fuente=" + fuente
+				+ ", fechaCreacion=" + fechaCreacion + "]";
 	}
 
-
 	private static final long serialVersionUID = 1L;
-
 
 }

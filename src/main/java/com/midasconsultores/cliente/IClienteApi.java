@@ -6,10 +6,12 @@ import java.util.List;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.midasconsultores.dto.Paginacion;
-import com.midasconsultores.entities.Noticia;
+import com.midasconsultores.models.Noticia;
 
 public interface IClienteApi {
 	
-	public WraperArticle getPagina( Date fecha, int pagina ) ;
+	public PaginacionArticle getPaginaArticles( Date fecha, int pagina ) ;
+	
+	public PaginacionProvider getPaginaProviders( int pagina );
 
 }

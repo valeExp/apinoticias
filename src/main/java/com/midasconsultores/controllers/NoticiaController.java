@@ -18,8 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.midasconsultores.dto.Paginacion;
 import com.midasconsultores.dto.Respuesta;
-import com.midasconsultores.entities.Noticia;
-import com.midasconsultores.entities.ParamsBusquedaNoticia;
+import com.midasconsultores.exceptions.ValidacionProcesoException;
+import com.midasconsultores.models.Noticia;
+import com.midasconsultores.models.ParamsBusquedaNoticia;
 import com.midasconsultores.services.INoticiaService;
 import com.midasconsultores.utilities.Utilities;
 
@@ -45,15 +46,22 @@ public class NoticiaController {
 		Respuesta respuesta;
 		
 		if( !noticiaService.existeCopiaLocal(fecha ) ) {
-			List<Noticia> noticias = noticiaService.getNoticiasDesdeApi(fecha);		
-			if ( !noticias.isEmpty() ) {
-				noticiaService.save(noticias);	
-				respuesta = new Respuesta(true,"La base se poblo para el dia " 
-						   .concat(	Utilities.dateToString(fecha, Utilities.FORMAT_DATE ) ) );	
-			}else {
-				respuesta = new Respuesta(true,"No se encontraron registros en el api para el dia " 
-						   .concat(	Utilities.dateToString(fecha, Utilities.FORMAT_DATE ) ) );	
-			}
+			
+			try {
+			
+				List<Noticia> noticias = noticiaService.getNoticiasDesdeApi(fecha);		
+				if ( !noticias.isEmpty() ) {
+					noticiaService.save(noticias);	
+					respuesta = new Respuesta(true,"La base se poblo para el dia " 
+							   .concat(	Utilities.dateToString(fecha, Utilities.FORMAT_DATE ) ) );	
+				}else {
+					respuesta = new Respuesta(true,"No se encontraron registros en el api para el dia " 
+							   					  .concat(	Utilities.dateToString(fecha, Utilities.FORMAT_DATE ) ) );	
+				}
+			}catch( ValidacionProcesoException ex ) {
+				respuesta = new Respuesta(false, ex.getMessage()
+											     .concat( Utilities.dateToString(fecha, Utilities.FORMAT_DATE ) ) );
+			}		
 			
 		}else {
 			respuesta = new Respuesta(true,"La base ya esta poblada para el dia " 
@@ -74,10 +82,14 @@ public class NoticiaController {
 			@RequestParam(required = false ) String titulo,
 			@ApiParam( name = "fuente", type = "String", value = "Fuente de la noticia", example="",  required = false)
 			@RequestParam(required = false ) String fuente,
-			@ApiParam( name = "pagina", type = "int", value = "pagina", example="",  required = false)
-			@RequestParam(required = false, defaultValue = "1" ) Integer pagina,
+			@ApiParam( name = "pagina", value = "pagina", example="",  required = false)
+			@RequestParam(required = false, value = "pagina"  ) int  pagina,
 			@ApiParam( name = "ordenFuenteAsc", type = "boolean", value = "ordenFuenteAsc", example="",  required = false)
 			@RequestParam(required = false, defaultValue = "true" ) Boolean ordenFuenteAsc) {
+		
+		    if( pagina <= 0 ) {
+		    	pagina = 1;
+		    }
 			
 			System.out.println("pagina: " + pagina + " ordenFuenteAsc: " + ordenFuenteAsc);
 			

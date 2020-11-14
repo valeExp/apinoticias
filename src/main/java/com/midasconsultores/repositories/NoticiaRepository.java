@@ -11,7 +11,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import com.midasconsultores.dto.Paginacion;
-import com.midasconsultores.entities.Noticia;
+import com.midasconsultores.models.Noticia;
 
 
 public interface NoticiaRepository extends JpaRepository<Noticia,String>{

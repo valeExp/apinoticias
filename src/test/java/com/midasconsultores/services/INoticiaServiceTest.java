@@ -28,7 +28,7 @@ class INoticiaServiceTest {
 	
 	@Test
 	void test() {
-		System.out.println( apiKey + " " +  urlBase );
+		noticiaService.getFuentesDesdeApi();
 	}
 
 }
