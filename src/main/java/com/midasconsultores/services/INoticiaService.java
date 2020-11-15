@@ -11,7 +11,7 @@ import com.midasconsultores.models.Noticia;
 public interface INoticiaService {
 	
 	public List<String> saveNoticias( List<Noticia> noticias );	
-	public Paginacion<Noticia> getNoticiasConFiltro( Map<String, Object> condiciones, boolean ordenFuenteAsc );	
+	public Paginacion<Noticia> getNoticiasConFiltro( Map<String, Object> condiciones,  String ordenarByFuente );	
 	public boolean existeCopiaLocalNoticias( Date fecha );
 	
 	public boolean existeCopiaLocalFuentes();	

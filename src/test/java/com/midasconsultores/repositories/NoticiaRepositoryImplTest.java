@@ -44,14 +44,7 @@ class NoticiaRepositoryImplTest {
 		condiciones.put( ParamsBusquedaNoticia.pagina.name() , 1);
 		
 		
-		//System.out.println("Tamaño " + noticiaDinamicaRepository.noticiasConFiltro( condiciones, true ).size() );
 		
-		
-		Paginacion<Noticia> paginacion = noticiaDinamicaRepository.getNoticiasConFiltro( condiciones, true );
-		
-		System.out.println( paginacion );
-		
-		System.out.println( "total : " + noticiaDinamicaRepository.calcularTotalRegistros(condiciones) );
 
 		
 		

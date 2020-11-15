@@ -17,5 +17,5 @@ import com.midasconsultores.models.Noticia;
 public interface NoticiaRepository extends JpaRepository<Noticia,String>{
 		
 	public Long countByFechaPublicacionBetween( Date fechaInicio, Date fechaFin ); 	
-	public Paginacion<Noticia> getNoticiasConFiltro( Map<String, Object> condiciones, boolean ordenarByFuenteAsc );
+	public Paginacion<Noticia> getNoticiasConFiltro( Map<String, Object> condiciones, String ordenarByFuente );
 }

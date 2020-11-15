@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.midasconsultores.dto.Paginacion;
 import com.midasconsultores.models.Noticia;
+import com.midasconsultores.models.Orden;
 import com.midasconsultores.models.ParamsBusquedaNoticia;
 import com.midasconsultores.services.INoticiaService;
 import com.midasconsultores.utilities.Utilities;
@@ -32,7 +33,7 @@ public class NoticiaRepositoryImpl {
 	private EntityManager em;
 	
 	@Transactional(readOnly = true)
-	public Paginacion<Noticia> getNoticiasConFiltro( Map<String, Object> condiciones, boolean ordenFuenteAsc ) {
+	public Paginacion<Noticia> getNoticiasConFiltro( Map<String, Object> condiciones, String ordenarByFuente ) {
 
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Noticia> consultaQuery = cb.createQuery(Noticia.class);	
@@ -47,7 +48,8 @@ public class NoticiaRepositoryImpl {
 			consultaQuery.select(noticias).where(predicados.toArray(new Predicate[predicados.size()]));			
 		}
 		
-		consultaQuery.orderBy( ordenFuenteAsc? cb.asc(noticias.get("fuente").get("id"))
+		consultaQuery.orderBy( ordenarByFuente.equals(Orden.ASC)?
+									  cb.asc(noticias.get("fuente").get("id"))
 									 :cb.desc(noticias.get("fuente").get("id")) );
 		
 		int pagina = (Integer)condiciones.get( ParamsBusquedaNoticia.pagina.name()) ;

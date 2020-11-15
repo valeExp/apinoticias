@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import com.midasconsultores.exceptions.NotFoundException;
+import com.midasconsultores.exceptions.ValidacionParametrosException;
 import com.midasconsultores.exceptions.ValidacionProcesoException;
 import com.midasconsultores.dto.Error;
 
@@ -144,5 +145,25 @@ public class ErrorHandlerController {
 		  
 		  return new ResponseEntity<Error> ( error, HttpStatus.CONFLICT ); 
 	}
+	
+	@ExceptionHandler
+	public ResponseEntity<?> handleValidacionProcesoException( HttpServletRequest request, ValidacionParametrosException ex ){
+		  Error error = new Error();
+		  error.setStatus( String.valueOf( HttpStatus.BAD_REQUEST.value() ) );
+		  error.setError(  HttpStatus.BAD_REQUEST.name() );
+		  error.setPath( request.getRequestURI() );
+		  error.setTimestamp( LocalDateTime.now().toString() );		
+		  
+		  error.setMensaje( ex.getMessage() != null? ex.getMessage() : "S/D" ); 
+		  
+		  return new ResponseEntity<Error> ( error, HttpStatus.BAD_REQUEST ); 
+	}
+	
+	
+	/*@ExceptionHandler(ConstraintViolationException.class)
+	  @ResponseStatus(HttpStatus.BAD_REQUEST)
+	  ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException e) {
+	    return new ResponseEntity<>("not valid due to validation error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+	}*/
 	
 }

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +27,7 @@ import com.midasconsultores.models.Noticia;
 import com.midasconsultores.models.ParamsBusquedaNoticia;
 import com.midasconsultores.services.INoticiaService;
 import com.midasconsultores.utilities.Utilities;
+import com.midasconsultores.validators.FuenteNoticia;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,6 +36,7 @@ import io.swagger.annotations.ApiParam;
 @RestController
 @RequestMapping("api")
 @Api(tags = "Noticias")
+@Validated
 public class NoticiaController {
 	
 	
@@ -97,17 +100,16 @@ public class NoticiaController {
 			@RequestParam(required = false ) String titulo,
 			@ApiParam( name = "fuente", type = "String", value = "Fuente de la noticia", example="",  required = false)
 			@RequestParam(required = false ) String fuente,
-			@ApiParam( name = "pagina", value = "pagina", example="",  required = false)
-			@RequestParam(required = false, value = "pagina"  ) int  pagina,
-			@ApiParam( name = "ordenarByFuenteAsc", type = "boolean", value = "ordenarByFuenteAsc", example="",  required = false)
-			@RequestParam(required = false, defaultValue = "true" ) Boolean ordenarByFuenteAsc) {
+			@ApiParam( name = "pagina", value = "pagina", example="1",  required = false)
+			@RequestParam(required = false, value = "pagina"  ) Integer  pagina,
+			@ApiParam( name = "ordenarByFuente", type = "String", value = "ASC,DESC", example="ASC",  required = false)
+			@RequestParam(required = false, defaultValue = "ASC" ) String ordenarByFuente) {
 		
 		    if( pagina <= 0 ) {
 		    	pagina = 1;
 		    }
 			
-			System.out.println("pagina: " + pagina + " ordenFuenteAsc: " + ordenarByFuenteAsc);
-			
+			System.out.println("pagina: " + pagina + " ordenFuenteAsc: " + ordenarByFuente);		
 			
 
 			Map<String, Object> condiciones = new HashMap<>();
@@ -127,12 +129,11 @@ public class NoticiaController {
 			condiciones.put( ParamsBusquedaNoticia.pagina.name() , pagina );
 			
 		
-			Paginacion<Noticia> noticias = noticiaService.getNoticiasConFiltro( condiciones,  ordenarByFuenteAsc );
+			Paginacion<Noticia> noticias = noticiaService.getNoticiasConFiltro( condiciones,  ordenarByFuente );
 		
 		    return new ResponseEntity<Paginacion<Noticia>>( noticias, HttpStatus.OK);
 		
-	}
-	
+	}	
 	
 	
 }

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.midasconsultores.cliente.IClienteApi;
 import com.midasconsultores.dto.Paginacion;
+import com.midasconsultores.exceptions.ValidacionParametrosException;
+import com.midasconsultores.exceptions.ValidacionProcesoException;
 import com.midasconsultores.models.Fuente;
 import com.midasconsultores.models.Noticia;
+import com.midasconsultores.models.Orden;
+import com.midasconsultores.models.ParamsBusquedaNoticia;
 import com.midasconsultores.repositories.FuenteRepository;
 import com.midasconsultores.repositories.NoticiaRepository;
 import com.midasconsultores.services.INoticiaService;
@@ -67,10 +73,32 @@ public class NoticiaServiceImpl implements INoticiaService {
 
 
 	@Override
-	public Paginacion<Noticia> getNoticiasConFiltro(Map<String, Object> condiciones, boolean ordenFuenteAsc) {
-		return noticiaRepository.getNoticiasConFiltro( condiciones,  ordenFuenteAsc);	
+	public Paginacion<Noticia> getNoticiasConFiltro( Map<String, Object> condiciones,  String ordenarByFuente ) {
+		validarCriteriosBusqueda( condiciones, ordenarByFuente );
+		return noticiaRepository.getNoticiasConFiltro( condiciones,  ordenarByFuente);	
 	}
 
+	
+	private void validarCriteriosBusqueda( Map<String, Object> condiciones, String ordenarByFuente  ) {
+	
+		if( condiciones.containsKey( ParamsBusquedaNoticia.fuente.name())  ) {
+			
+			String fuente = (String) condiciones.get( ParamsBusquedaNoticia.fuente.name() );
+			
+			List<Fuente> fuentes =  getFuentes();			
+			
+			 getFuentes().stream()
+			 .filter( f -> f.getId().equals(fuente) ).findAny()
+			 .orElseThrow(  () -> new ValidacionParametrosException( "Los valores permitidos son:"
+					 		.concat( fuentes.stream().map(Fuente::getId).collect( Collectors.joining(",") )   ) ) );
+			
+		}	
+		
+		if( !Orden.contiene(ordenarByFuente)) {
+			throw new ValidacionParametrosException( "Los valores permitidos son:".concat( Orden.valoresStr() ) );
+		}
+		
+	}
 	
 	private List<Fuente> getFuentes() {
 		return fuenteRepository.findAll();
