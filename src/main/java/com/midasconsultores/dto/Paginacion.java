@@ -7,14 +7,18 @@ public class Paginacion<T> {
 	int page;
 	int pages;
 	long total;
+	String ordenarByFuente;
 
 	List<T> contenido;
 
-	public Paginacion(int page, int pages, long total2, List<T> contenido, int tamanioPagina) {
+	
+
+	public Paginacion(int page, int pages, long total, String ordenarByFuente, List<T> contenido) {
 		super();
 		this.page = page;
 		this.pages = pages;
-		this.total = total2;
+		this.total = total;
+		this.ordenarByFuente = ordenarByFuente;
 		this.contenido = contenido;
 	}
 
@@ -50,9 +54,20 @@ public class Paginacion<T> {
 		this.pages = pages;
 	}
 
+	public String getOrdenarByFuente() {
+		return ordenarByFuente;
+	}
+
+	public void setOrdenarByFuente(String ordenarByFuente) {
+		this.ordenarByFuente = ordenarByFuente;
+	}
+
 	@Override
 	public String toString() {
-		return "Paginacion [page=" + page + ", pages=" + pages + ", total=" + total + ", contenido=" + contenido + "]";
+		return "Paginacion [page=" + page + ", pages=" + pages + ", total=" + total + ", ordenarByFuente="
+				+ ordenarByFuente + ", contenido=" + contenido + "]";
 	}
+
+	
 
 }

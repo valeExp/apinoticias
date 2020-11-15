@@ -105,12 +105,7 @@ public class NoticiaController {
 			@ApiParam( name = "ordenarByFuente", type = "String", value = "ASC,DESC", example="ASC",  required = false)
 			@RequestParam(required = false, defaultValue = "ASC" ) String ordenarByFuente) {
 		
-		    if( pagina <= 0 ) {
-		    	pagina = 1;
-		    }
-			
-			System.out.println("pagina: " + pagina + " ordenFuenteAsc: " + ordenarByFuente);		
-			
+		  
 
 			Map<String, Object> condiciones = new HashMap<>();
 			
@@ -126,8 +121,10 @@ public class NoticiaController {
 				condiciones.put( ParamsBusquedaNoticia.fecha.name(),fecha );
 			}
 			
-			condiciones.put( ParamsBusquedaNoticia.pagina.name() , pagina );
-			
+			if( pagina != null ) {
+				condiciones.put( ParamsBusquedaNoticia.pagina.name() , pagina );
+			}
+						
 		
 			Paginacion<Noticia> noticias = noticiaService.getNoticiasConFiltro( condiciones,  ordenarByFuente );
 		

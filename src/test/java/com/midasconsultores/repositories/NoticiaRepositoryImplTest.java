@@ -24,6 +24,8 @@ import com.midasconsultores.utilities.Utilities;
 class NoticiaRepositoryImplTest {
 	
 	
+	public static final int pageSize = 50;
+	
 	@Autowired
 	NoticiaRepositoryImpl noticiaDinamicaRepository;
 
@@ -43,11 +45,23 @@ class NoticiaRepositoryImplTest {
 		//condiciones.put( ParamsBusquedaNoticia.titulo.name() ,"Coronavirus" );
 		condiciones.put( ParamsBusquedaNoticia.pagina.name() , 1);
 		
+		assertEquals( 6 ,  calcularTotalPages( 299 ));
+		assertEquals( 7 ,  calcularTotalPages( 344 ));
+		assertEquals( 7 ,  calcularTotalPages( 350 ));
+		assertEquals( 8 ,  calcularTotalPages( 351 ));	
 		
 		
-
-		
-		
+	}
+	
+	
+	private int calcularTotalPages( long total ) {		
+		int pages = 0;		
+		if( total > 0 ) {
+			long resto = total % pageSize;
+			
+			pages = (resto > 0) ? (int)(total / pageSize) + 1:(int)(total / pageSize);
+		}
+		return 	pages;	
 	}
 
 }

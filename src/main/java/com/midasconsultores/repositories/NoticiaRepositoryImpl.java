@@ -27,14 +27,31 @@ import com.midasconsultores.utilities.Utilities;
 @Repository
 public class NoticiaRepositoryImpl {
 	
-	public final int pageSize = 50;
+	public static final int pageSize = 50;
 
 	@PersistenceContext
 	private EntityManager em;
 	
 	@Transactional(readOnly = true)
-	public Paginacion<Noticia> getNoticiasConFiltro( Map<String, Object> condiciones, String ordenarByFuente ) {
-
+	public Paginacion<Noticia> getNoticiasConFiltro( Map<String, Object> condiciones, String ordenarByFuente ) {	
+				
+		long total = calcularTotalRegistros( condiciones );
+		int pages =  calcularTotalPages( total );
+		int page = ( (Integer)condiciones.get( ParamsBusquedaNoticia.pagina.name()) );		
+		page = ( page > pages ) ? pages:page;
+		page = ( page <= 0 )?1:page;
+		
+		List<Noticia> noticias = new ArrayList<>();		
+		if( total > 0 ) {			
+			noticias = getPagina( crearQueryNoticias( condiciones, ordenarByFuente ), page ); 
+		}		
+		
+		return new Paginacion<Noticia>( page, pages, total,	ordenarByFuente, noticias );
+										
+	}
+	
+	private CriteriaQuery<Noticia> crearQueryNoticias( Map<String, Object> condiciones, String ordenarByFuente ) {
+		
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Noticia> consultaQuery = cb.createQuery(Noticia.class);	
 		Root<Noticia> noticias = consultaQuery.from(Noticia.class);
@@ -48,31 +65,18 @@ public class NoticiaRepositoryImpl {
 			consultaQuery.select(noticias).where(predicados.toArray(new Predicate[predicados.size()]));			
 		}
 		
-		consultaQuery.orderBy( ordenarByFuente.equals(Orden.ASC)?
+		consultaQuery.orderBy( ordenarByFuente.equals(Orden.ASC.name())?
 									  cb.asc(noticias.get("fuente").get("id"))
 									 :cb.desc(noticias.get("fuente").get("id")) );
 		
-		int pagina = (Integer)condiciones.get( ParamsBusquedaNoticia.pagina.name()) ;
-		long total = calcularTotalRegistros( condiciones );
-		int pages =  calcularTotalPages( total );
+		return consultaQuery;
 		
-		return new Paginacion<Noticia>( pagina,
-										pages,
-										total,
-				 						getPagina( consultaQuery, pagina ),
-										pageSize);
 	}
 	
-	private List<Noticia> getPagina(CriteriaQuery<Noticia> consultaQuery, int pagina ) {
-		
-		if (pagina <= 0) {
-			pagina = 1;
-		}
-		
-		int pageNumber = (pagina - 1) * pageSize;
+	private List<Noticia> getPagina( CriteriaQuery<Noticia> consultaQuery, int page ) {		
 
 		TypedQuery<Noticia> typedQuery = em.createQuery(consultaQuery);
-		typedQuery.setFirstResult((pageNumber) * pageSize);
+		typedQuery.setFirstResult( (page - 1) * pageSize );
 		typedQuery.setMaxResults(pageSize);
 		
 		return  typedQuery.getResultList();

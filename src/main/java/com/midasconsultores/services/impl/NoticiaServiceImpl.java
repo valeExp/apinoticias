@@ -89,13 +89,14 @@ public class NoticiaServiceImpl implements INoticiaService {
 			
 			 getFuentes().stream()
 			 .filter( f -> f.getId().equals(fuente) ).findAny()
-			 .orElseThrow(  () -> new ValidacionParametrosException( "Los valores permitidos son:"
+			 .orElseThrow(  () -> new ValidacionParametrosException( "Los valores permitidos en el campo fuente son:"
 					 		.concat( fuentes.stream().map(Fuente::getId).collect( Collectors.joining(",") )   ) ) );
 			
 		}	
 		
 		if( !Orden.contiene(ordenarByFuente)) {
-			throw new ValidacionParametrosException( "Los valores permitidos son:".concat( Orden.valoresStr() ) );
+			throw new ValidacionParametrosException( "Los valores permitidos en el campo ordenarByFuente son:"
+													 .concat( Orden.valoresStr() ) );
 		}
 		
 	}
