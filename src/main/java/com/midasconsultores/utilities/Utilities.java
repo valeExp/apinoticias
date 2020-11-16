@@ -54,5 +54,24 @@ public class Utilities {
 	        return date;
 	 }	    
 		
-	
+	 public static Date fechaAddDia( Date fecha, int dias ){
+			Date fechaRespuesta = null;
+			
+			if( fecha != null ) {
+				GregorianCalendar f = new GregorianCalendar();
+				f.setTimeInMillis( fecha.getTime() );				
+				f.add( GregorianCalendar.DATE, dias );			
+				fechaRespuesta =   f.getTime();
+			}
+			
+			return fechaRespuesta;
+	}
+	 
+	public static String cortarCadenaALongitud( String cadena, int longitud ){        
+        if(  cadena != null && cadena.length() > longitud ){
+            cadena = cadena.substring(0, longitud );
+        }        
+        return cadena;
+    }
+
 }

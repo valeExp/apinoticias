@@ -137,4 +137,12 @@ public class NoticiaRepositoryImpl {
 		return 	pages;	
 	}
 
+	
+	/*@Override
+	@Transactional
+	public void delete(Long id) {
+		em.remove(findOne(id));
+	}*/
+	
+	
 }

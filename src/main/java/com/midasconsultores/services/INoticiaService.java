@@ -13,6 +13,9 @@ public interface INoticiaService {
 	public List<String> saveNoticias( List<Noticia> noticias );	
 	public Paginacion<Noticia> getNoticiasConFiltro( Map<String, Object> condiciones,  String ordenarByFuente );	
 	public boolean existeCopiaLocalNoticias( Date fecha );
+	public List<Noticia> getNoticiasByFechaPublicacion( Date fecha );
+	public void eliminarNoticia( Noticia noti );
+	
 	
 	public boolean existeCopiaLocalFuentes();	
 	public List<String> saveFuentes( List<Fuente> fuentes ); 

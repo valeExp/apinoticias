@@ -130,5 +130,19 @@ public class NoticiaServiceImpl implements INoticiaService {
 		return errores;
 		
 	}
+
+
+	@Override
+	@Transactional(readOnly = true) 
+	public List<Noticia> getNoticiasByFechaPublicacion( Date fecha ) {
+		return noticiaRepository.getNoticiasByFechaPublicacion( fecha );
+	}
+	
+
+	@Override
+	@Transactional(readOnly = false) 
+	public void eliminarNoticia( Noticia noti ) {
+		 noticiaRepository.delete(noti);		
+	}
 	
 }

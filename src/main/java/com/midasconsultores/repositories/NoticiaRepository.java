@@ -17,7 +17,7 @@ public interface NoticiaRepository extends JpaRepository<Noticia,String>{
 	public Long countByFechaPublicacionBetween( Date fechaInicio, Date fechaFin ); 	
 	public Paginacion<Noticia> getNoticiasConFiltro( Map<String, Object> condiciones, String ordenarByFuente );
 	
-	@Query( "Select n from Noticia n where n.fechaPublicacion = :fecha" )
-	public List<Noticia> deleteByFechaPublicacion( @Param("fecha") Date fecha );
+	@Query( "Select n from Noticia n where n.fechaPublicacion <= :fecha" )
+	public List<Noticia> getNoticiasByFechaPublicacion( @Param("fecha") Date fecha );
 	
 }
